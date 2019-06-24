@@ -6,7 +6,6 @@
 * GDAL -- [Homepage](http://www.gdal.org)
 * TensorFlow -- [Homepage](https://www.tensorflow.org)
 
-
 ### Install Gdal
 Get gdal development libraries:
 ```shell
@@ -16,7 +15,6 @@ $ sudo apt-get install libgdal-dev
 $ sudo apt-get install python3-dev
 $ sudo apt-get install gdal-bin python3-gdal
 ```
-
 
 ### Install and initialize redis
 ```shell
@@ -39,6 +37,7 @@ $ source env/bin/activate
 ```shell
 (env) $ pip3 install numpy
 ```
+
 ### Install GDAL
 ```shell
 (env) $ pip3 install GDAL==$(gdal-config --version) --global-option=build_ext --global-option="-I/usr/include/gdal"
