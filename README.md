@@ -1,6 +1,6 @@
-# earth-engine
-
 # Earh Engine
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2f6fee0323c54a2c9651b80c58ac015a)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=saraivaufc/earth-engine&amp;utm_campaign=Badge_Grade)
 
 ### Requirements
 * GDAL -- [Homepage](http://www.gdal.org)
