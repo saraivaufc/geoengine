@@ -1,0 +1,17 @@
+# -*- coding: utf-8 -*-
+from setuptools import setup, find_packages
+
+setup(
+    name='earth-engine',
+    version='0.0.1',
+    url='https://github.com/saraivaufc/earth-engine.git',
+    license='MIT License',
+    author='Marciano Saraiva',
+    author_email='saraiva.ufc@gmail.com',
+    keywords='remote sensing geoprocessing',
+    description=u"Earth Engine combines a multi-petabyte catalog of satellite imagery and geospatial datasets with planetary-scale analysis capabilities and makes it available for scientists, researchers, and developers to detect changes, map trends, and quantify differences on the Earth's surface.",
+    packages=find_packages(),
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=[],
+)
