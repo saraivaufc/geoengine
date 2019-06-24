@@ -1,0 +1,1 @@
+DATABASE = "earth_engine"
