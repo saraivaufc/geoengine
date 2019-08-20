@@ -11,8 +11,9 @@ class ImageCollection(DynamicDocument):
     }
 
 class Image(DynamicDocument):
-    path = StringField()
-    imageCollection = ReferenceField(ImageCollection, reverse_delete_rule=2)
+    path = StringField(required=True)
+    imageCollection = LazyReferenceField(ImageCollection,
+                                         reverse_delete_rule=2)
     file = FileField(required=True)
     properties = DictField()
 
@@ -21,6 +22,7 @@ class Image(DynamicDocument):
     }
 
 class FeatureCollection(DynamicDocument):
+    path = StringField()
     type = StringField(default="FeatureCollection")
     properties = DictField()
 
@@ -31,9 +33,8 @@ class FeatureCollection(DynamicDocument):
 
 class Feature(DynamicDocument):
     type = StringField(default="Feature")
-    featureCollection = LazyReferenceField(document_type=FeatureCollection,
-                                           reverse_delete_rule=True,
-                                           passthrough=True)
+    featureCollection = LazyReferenceField(FeatureCollection,
+                                           reverse_delete_rule=2)
     geometry = DynamicField()
     properties = DictField()
 

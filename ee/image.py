@@ -41,11 +41,9 @@ class Image(ee.element.Element):
     @staticmethod
     def load(id):
         id = urlparse(id)
-        print(id)
-        print(id.scheme)
-        print(id.path)
+
         if id.scheme == "db":
-            image = Image._loadFromDatabase(id.path)
+            image = Image._loadFromDatabase(id.netloc+id.path)
         else:
             image = Image._loadFromLocalDisk(id.path)
         return image
@@ -98,10 +96,14 @@ class Image(ee.element.Element):
 
     @staticmethod
     def _loadFromDatabase(dataSourceNamePrefix):
+        print("dataSourceNamePrefix:", dataSourceNamePrefix)
         words = dataSourceNamePrefix.split("/")
 
         filename = words[-1]
+        print("filename:", filename)
         imageCollectionPath = "/".join(words[0:-1])
+
+        print("imageCollectionPath:", imageCollectionPath)
 
         imageCollection = models.ImageCollection \
             .objects(path=imageCollectionPath) \
@@ -146,6 +148,9 @@ class Image(ee.element.Element):
         return self._bands
 
     def metadata(self, property, name):
+        """
+        Generates a constant image of type double from a metadata property.
+        """
         image = self.copy()
         image = image.set(property, name)
         return image
@@ -260,8 +265,10 @@ class Image(ee.element.Element):
                     if band.getName() == selector:
                         new_band = band
                         break
-            if not new_band:
-                new_band = bands.get(index)
+
+            if new_band is None:
+                raise Exception("Band {band_name} not found in image.".format(
+                    band_name=selector))
 
             if len(opt_names) > 0:
                 new_bands = new_bands.add(new_band.setName(opt_names[index]))
@@ -348,6 +355,9 @@ class Image(ee.element.Element):
 
     def copy(self):
         return Image(self.args, **self.__dict__)
+
+    def copyProjection(source):
+        metadata
 
     @staticmethod
     def name():

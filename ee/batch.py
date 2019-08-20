@@ -28,16 +28,16 @@ class Export():
             imageCollectionPath = "/".join(words[0:-1])
 
             models.ImageCollection.objects(path=imageCollectionPath) \
-                .update(upsert=True, set__path=imageCollectionPath)
+                .update_one(upsert=True, set__path=imageCollectionPath)
 
             imageCollection = models.ImageCollection\
                 .objects(path=imageCollectionPath)\
                 .first()
 
             models.Image.objects(
-                imageCollection = imageCollection.id,
-                path = filename,
-            ).update(upsert=True,
+                imageCollection=imageCollection.id,
+                path=filename,
+            ).update_one(upsert=True,
                 set__imageCollection=imageCollection.id,
                 set__path=filename,
                 properties=image.properties().getInfo()
@@ -91,7 +91,7 @@ class Export():
                 image.getBands().length(),
                 band_type
             )
-            
+
             dataset.SetGeoTransform(transform)
             dataset.SetProjection(projection)
             for band_index, band in enumerate(image.getBands()):
@@ -110,18 +110,16 @@ class Export():
         @staticmethod
         def toLocalDisk(collection, fileNamePrefix):
             collection = collection.getInfo()
-            Export.table.__save(collection, fileNamePrefix)
+            Export.table.__build_dataset(collection, fileNamePrefix)
 
         @staticmethod
         def toDatabase(collection, fileNamePrefix=None, **kwargs):
             models.FeatureCollection \
-                .objects(properties__code=fileNamePrefix) \
-                .update_one(upsert=True,
-                    set__properties={"code": fileNamePrefix}
-                )
+                .objects(path=fileNamePrefix) \
+                .update_one(upsert=True, set__path=fileNamePrefix)
 
             featureCollection = models.FeatureCollection\
-                .objects(properties__code=fileNamePrefix)\
+                .objects(path=fileNamePrefix)\
                 .first()
 
             for feature in collection.features():
@@ -129,17 +127,17 @@ class Export():
                 properties = feature.properties().getInfo()
 
                 models.Feature\
-                    .objects(properties=properties) \
-                    .update_one(upsert=True,
+                    .objects(
+                        featureCollection=featureCollection.id,
+                        geometry=geometry,
+                        properties=properties
+                    ).update_one(upsert=True,
                         set__featureCollection=featureCollection.id,
                         set__geometry=geometry,
-                        set__properties=properties
-                    )
-
-                break
+                        set__properties=properties)
 
         @staticmethod
-        def __save(collection, fileNamePrefix):
+        def __build_dataset(collection, fileNamePrefix):
             driver = ogr.GetDriverByName("ESRI Shapefile")
             data_source = driver.CreateDataSource(fileNamePrefix)
 
