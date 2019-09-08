@@ -7,10 +7,10 @@
 # pylint: disable=g-bad-import-order
 import six
 
-import ee.data
-import ee.ee_exception
-import ee.encodable
-import ee.serializer
+import ge.data
+import ge.ee_exception
+import ge.encodable
+import ge.serializer
 
 
 class ComputedObjectMetaclass(type):
@@ -31,7 +31,7 @@ class ComputedObjectMetaclass(type):
 
 
 class ComputedObject(
-    six.with_metaclass(ComputedObjectMetaclass, ee.encodable.Encodable)):
+    six.with_metaclass(ComputedObjectMetaclass, ge.encodable.Encodable)):
     """A representation of an Earth Engine computed object.
 
     This is a base class for most API objects.
@@ -67,7 +67,7 @@ class ComputedObject(
               generated when it is included in an ee.CustomFunction.
         """
         if opt_varName and (func or args):
-            raise ee.ee_exception.EEException(
+            raise ge.ee_exception.EEException(
                 'When "opt_varName" is specified, "func" and "args" must be null.')
         self.func = func
         self.args = args
@@ -90,7 +90,7 @@ class ComputedObject(
         Returns:
           The object can evaluate to anything.
         """
-        return ee.data.getValue({'json': self.serialize()})
+        return ge.data.getValue({'json': self.serialize()})
 
     def encode(self, encoder):
         """Encodes the object in a format compatible with Serializer."""
@@ -127,11 +127,11 @@ class ComputedObject(
         Returns:
           The serialized representation of this object.
         """
-        return ee.serializer.toJSON(self, opt_pretty)
+        return ge.serializer.toJSON(self, opt_pretty)
 
     def __str__(self):
         """Writes out the object in a human-readable form."""
-        return 'ee.%s(%s)' % (self.name(), ee.serializer.toReadableJSON(self))
+        return 'ee.%s(%s)' % (self.name(), ge.serializer.toReadableJSON(self))
 
     def isVariable(self):
         """Returns whether this computed object is a variable reference."""

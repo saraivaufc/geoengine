@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """A wrapper for dictionaries."""
 
-import ee.computedobject
+import ge.computedobject
 
 
-class Dictionary(ee.computedobject.ComputedObject):
+class Dictionary(ge.computedobject.ComputedObject):
 
     def __init__(self, dict={}, **kwargs):
         self._dictionary = dict

@@ -1,6 +1,5 @@
 from mongoengine import connect
-from conf import settings
-
+from ge import settings
 
 DATABASE = getattr(settings, "DATABASE", "default")
 

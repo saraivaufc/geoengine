@@ -1,5 +1,4 @@
 import gc
-import os
 import random
 from urllib.parse import urlparse
 
@@ -8,22 +7,22 @@ import tensorflow as tf
 from osgeo import gdal
 from osgeo import gdal_array
 
-import ee.apifunction
-import ee.ee_list
-import ee.element
-from ee.tools import Raster
+import ge.apifunction
+import ge.ee_list
+import ge.element
+from ge.tools import Raster
 
-from db import models
+from ge.db import models
 
 
 # https://pcjericks.github.io/py-gdalogr-cookbook/
 
-class Image(ee.element.Element):
+class Image(ge.element.Element):
     def __init__(self, *args, **kwargs):
         super(Image, self).__init__(
-            ee.apifunction.ApiFunction.lookup('Image.load'), kwargs)
+            ge.apifunction.ApiFunction.lookup('Image.load'), kwargs)
 
-        self._bands = ee.ee_list.List([])
+        self._bands = ge.ee_list.List([])
         self.__dict__.update(kwargs)
 
         if len(args) > 0:
@@ -162,43 +161,43 @@ class Image(ee.element.Element):
         return names
 
     def add(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.add)
+        return self.applyFunc(ge.Image(image2), tf.math.add)
 
     def multiply(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.multiply)
+        return self.applyFunc(ge.Image(image2), tf.math.multiply)
 
     def subtract(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.subtract)
+        return self.applyFunc(ge.Image(image2), tf.math.subtract)
 
     def divide(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.divide)
+        return self.applyFunc(ge.Image(image2), tf.math.divide)
 
     def eq(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.equal)
+        return self.applyFunc(ge.Image(image2), tf.math.equal)
 
     def gt(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.greater)
+        return self.applyFunc(ge.Image(image2), tf.math.greater)
 
     def gte(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.greater_equal)
+        return self.applyFunc(ge.Image(image2), tf.math.greater_equal)
 
     def lt(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.less)
+        return self.applyFunc(ge.Image(image2), tf.math.less)
 
     def lte(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.less_equal)
+        return self.applyFunc(ge.Image(image2), tf.math.less_equal)
 
     def matrixMultiply(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.matmul)
+        return self.applyFunc(ge.Image(image2), tf.math.matmul)
 
     def max(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.maximum)
+        return self.applyFunc(ge.Image(image2), tf.math.maximum)
 
     def min(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.minimum)
+        return self.applyFunc(ge.Image(image2), tf.math.minimum)
 
     def neq(self, image2):
-        return self.applyFunc(ee.Image(image2), tf.math.not_equal)
+        return self.applyFunc(ge.Image(image2), tf.math.not_equal)
 
     def exp(self):
         return self.applyFuncMono(tf.math.exp)
@@ -218,7 +217,7 @@ class Image(ee.element.Element):
 
     def toInt16(self):
         image = self.copy()
-        bands = ee.ee_list.List([])
+        bands = ge.ee_list.List([])
         for band_index, band in enumerate(image._bands):
             band = band.setType(gdal.GDT_Int16)
             bands = bands.add(band)
@@ -230,7 +229,7 @@ class Image(ee.element.Element):
 
     def toFloat32(self):
         image = self.copy()
-        bands = ee.ee_list.List([])
+        bands = ge.ee_list.List([])
         for band_index, band in enumerate(image._bands):
             band = band.setType(gdal.GDT_Float32)
             bands = bands.add(band)
@@ -245,7 +244,7 @@ class Image(ee.element.Element):
         return the project of first band
         """
         first_band = self._bands.get(0)
-        proj = ee.Projection(crs=first_band.getCRS(),
+        proj = ge.Projection(crs=first_band.getCRS(),
                              transform=first_band.getTransform())
         return proj
 
@@ -257,7 +256,7 @@ class Image(ee.element.Element):
                                                           list) else opt_selectors
         image = self.copy()
         bands = image._bands
-        new_bands = ee.List([])
+        new_bands = ge.List([])
         for index, selector in enumerate(opt_selectors):
             new_band = None
             if isinstance(selector, str):
@@ -328,7 +327,7 @@ class Image(ee.element.Element):
             raise ValueError("crsTransform and scale cannot both be value.")
 
         image = self.copy().getInfo()
-        bands = ee.ee_list.List([])
+        bands = ge.ee_list.List([])
         for band_index, band in enumerate(image._bands):
             band_reprojected = band.reproject(crs, crsTransform, scale)
             bands = bands.add(band_reprojected)
@@ -337,7 +336,7 @@ class Image(ee.element.Element):
 
     def clip(self, geometry):
         image = self.copy().getInfo()
-        bands = ee.ee_list.List([])
+        bands = ge.ee_list.List([])
         for band_index, band in enumerate(image._bands):
             band_clipped = band.clip(geometry)
             bands = bands.add(band_clipped)
@@ -346,7 +345,7 @@ class Image(ee.element.Element):
 
     def getInfo(self):
         image = self.copy()
-        bands = ee.ee_list.List([])
+        bands = ge.ee_list.List([])
         for band_index, band in enumerate(image._bands):
             band = band.getInfo()
             bands = bands.add(band)
@@ -364,10 +363,10 @@ class Image(ee.element.Element):
         return 'Image'
 
 
-class Band(ee.element.Element):
+class Band(ge.element.Element):
     def __init__(self, name, type, data=None, **kwargs):
         super(Band, self).__init__(
-            ee.apifunction.ApiFunction.lookup('Image.band'), kwargs)
+            ge.apifunction.ApiFunction.lookup('Image.band'), kwargs)
         self._name = name
         self._cols = None
         self._rows = None

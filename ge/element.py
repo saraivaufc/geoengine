@@ -4,13 +4,13 @@
 This class is never intended to be instantiated by the user.
 """
 
-import ee.apifunction
-import ee.computedobject
-import ee.dictionary
-import ee.ee_exception
+import ge.apifunction
+import ge.computedobject
+import ge.dictionary
+import ge.ee_exception
 
 
-class Element(ee.computedobject.ComputedObject):
+class Element(ge.computedobject.ComputedObject):
     """Base class for ImageCollection and FeatureCollection."""
 
     _initialized = False
@@ -19,7 +19,7 @@ class Element(ee.computedobject.ComputedObject):
         """Constructs a collection by initializing its ComputedObject."""
         super(Element, self).__init__(func, args, opt_varName)
         self._id = None
-        self._properties = ee.dictionary.Dictionary({})
+        self._properties = ge.dictionary.Dictionary({})
 
     @staticmethod
     def name():
@@ -42,7 +42,7 @@ class Element(ee.computedobject.ComputedObject):
             if (isinstance(properties, dict) and
                     (len(properties) == 1 and 'properties' in properties) and
                     isinstance(properties['properties'],
-                               (dict, ee.computedobject.ComputedObject))):
+                               (dict, ge.computedobject.ComputedObject))):
                 # Looks like a call with keyword parameters. Extract them.
                 properties = properties['properties']
 
@@ -51,22 +51,22 @@ class Element(ee.computedobject.ComputedObject):
                 # allows filter propagation.
                 result = self
                 for key, value in properties.items():
-                    result = ee.apifunction.ApiFunction.call_(
+                    result = ge.apifunction.ApiFunction.call_(
                         'Element.set', result, key, value)
-            elif (isinstance(properties, ee.computedobject.ComputedObject) and
-                  ee.apifunction.ApiFunction.lookupInternal(
+            elif (isinstance(properties, ge.computedobject.ComputedObject) and
+                  ge.apifunction.ApiFunction.lookupInternal(
                       'Element.setMulti')):
                 # A computed dictionary. Can't set each key separately.
-                result = ee.apifunction.ApiFunction.call_(
+                result = ge.apifunction.ApiFunction.call_(
                     'Element.setMulti', self, properties)
             else:
-                raise ee.ee_exception.EEException(
+                raise ge.ee_exception.EEException(
                     'When Element.set() is passed one argument, '
                     'it must be a dictionary.')
         else:
             # Interpret as key1, value1, key2, value2, ...
             if len(args) % 2 != 0:
-                raise ee.ee_exception.EEException(
+                raise ge.ee_exception.EEException(
                     'When Element.set() is passed multiple arguments, there '
                     'must be an even number of them.')
             result = self

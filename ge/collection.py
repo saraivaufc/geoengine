@@ -1,21 +1,21 @@
 import functools
 
-import ee.apifunction
-import ee.ee_list
-import ee.element
+import ge.apifunction
+import ge.ee_list
+import ge.element
 
 
-class Collection(ee.element.Element):
+class Collection(ge.element.Element):
     def __init__(self, features, *args, **kwargs):
         super(Collection, self).__init__(
-            ee.apifunction.ApiFunction.lookup('Collection.load'), kwargs)
+            ge.apifunction.ApiFunction.lookup('Collection.load'), kwargs)
         self._features = features
         self.__dict__.update(kwargs)
 
     def map(self, algorithm, dropNulls=False):
         print("Collection.map")
         collection = self.copy()
-        collection._features = ee.ee_list.List(
+        collection._features = ge.ee_list.List(
             map(lambda x: algorithm(x), collection._features))
         return collection
 

@@ -1,4 +1,4 @@
-import ee
+import ge
 
 # fc = ee.FeatureCollection("data/LANDSAT.shp")
 
@@ -8,9 +8,9 @@ import ee
 # )
 
 
-fc = ee.FeatureCollection("data/SENTINEL.shp")
+fc = ge.FeatureCollection("data/SENTINEL.shp")
 
-ee.batch.Export.table.toDatabase(
+ge.batch.Export.table.toDatabase(
     collection=fc,
     fileNamePrefix="COPERNICUS/S2/TILES"
 )

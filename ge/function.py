@@ -6,13 +6,13 @@
 
 import textwrap
 
-import ee.computedobject
-import ee.ee_exception
-import ee.encodable
-import ee.serializer
+import ge.computedobject
+import ge.ee_exception
+import ge.encodable
+import ge.serializer
 
 
-class Function(ee.encodable.Encodable):
+class Function(ge.encodable.Encodable):
     """An abstract base class for functions callable by the EE API.
 
     Subclasses must implement encode() and getSignature().
@@ -75,7 +75,7 @@ class Function(ee.encodable.Encodable):
           specifies a recognized return type, the returned value will be cast
           to that type.
         """
-        result = ee.computedobject.ComputedObject(self,
+        result = ge.computedobject.ComputedObject(self,
                                                   self.promoteArgs(named_args))
         return Function._promoter(result, self.getReturnType())
 
@@ -106,7 +106,7 @@ class Function(ee.encodable.Encodable):
                 promoted_args[name] = Function._promoter(args[name],
                                                          spec['type'])
             elif not spec.get('optional'):
-                raise ee.ee_exception.EEException(
+                raise ge.ee_exception.EEException(
                     'Required argument (%s) missing to function: %s' % (
                         name, self))
             known.add(name)
@@ -114,7 +114,7 @@ class Function(ee.encodable.Encodable):
         # Check for unknown arguments.
         unknown = set(args.keys()).difference(known)
         if unknown:
-            raise ee.ee_exception.EEException(
+            raise ge.ee_exception.EEException(
                 'Unrecognized arguments %s to function: %s' % (unknown, self))
 
         return promoted_args
@@ -139,7 +139,7 @@ class Function(ee.encodable.Encodable):
 
         # Handle positional arguments.
         if len(specs) < len(args):
-            raise ee.ee_exception.EEException(
+            raise ge.ee_exception.EEException(
                 'Too many (%d) arguments to function: %s' % (len(args), self))
         named_args = dict([(spec['name'], value)
                            for spec, value in zip(specs, args)])
@@ -148,7 +148,7 @@ class Function(ee.encodable.Encodable):
         if extra_keyword_args:
             for name in extra_keyword_args:
                 if name in named_args:
-                    raise ee.ee_exception.EEException(
+                    raise ge.ee_exception.EEException(
                         'Argument %s specified as both positional and '
                         'keyword to function: %s' % (name, self))
                 named_args[name] = extra_keyword_args[name]
@@ -160,7 +160,7 @@ class Function(ee.encodable.Encodable):
         return self.getSignature()['returns']
 
     def serialize(self):
-        return ee.serializer.toJSON(self)
+        return ge.serializer.toJSON(self)
 
     def __str__(self):
         """Returns a user-readable docstring for this function."""

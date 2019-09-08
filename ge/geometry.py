@@ -3,16 +3,16 @@ import json
 
 from osgeo import ogr, osr
 
-import ee.apifunction
-import ee.computedobject
-import ee.ee_exception
-import ee.ee_types
-import ee.projection
-import ee.serializer
-from ee.tools.vector import Vector
+import ge.apifunction
+import ge.computedobject
+import ge.ee_exception
+import ge.ee_types
+import ge.projection
+import ge.serializer
+from ge.tools.vector import Vector
 
 
-class Geometry(ee.computedobject.ComputedObject):
+class Geometry(ge.computedobject.ComputedObject):
     """
     https://pcjericks.github.io/py-gdalogr-cookbook/projection.html
     https://www.programcreek.com/python/example/58591/osgeo.osr.SpatialReference
@@ -27,7 +27,7 @@ class Geometry(ee.computedobject.ComputedObject):
         opt_proj: "EPSG:4326" or ee.Projection()
         """
         super(Geometry, self).__init__(
-            ee.apifunction.ApiFunction.lookup('Geometry.load'), kwargs)
+            ge.apifunction.ApiFunction.lookup('Geometry.load'), kwargs)
 
         if geo_json:
             if not isinstance(geo_json, str):
@@ -35,8 +35,8 @@ class Geometry(ee.computedobject.ComputedObject):
             self._geometry = ogr.CreateGeometryFromJson(geo_json)
 
             if (opt_proj):
-                if (not isinstance(opt_proj, ee.Projection)):
-                    opt_proj = ee.Projection(opt_proj)
+                if (not isinstance(opt_proj, ge.Projection)):
+                    opt_proj = ge.Projection(opt_proj)
 
                 targetSR = osr.SpatialReference()
                 targetSR.ImportFromWkt(opt_proj.wkt())
@@ -193,8 +193,8 @@ class Geometry(ee.computedobject.ComputedObject):
         :param maxError: The maximum projection error.
         """
 
-        if (not isinstance(proj, ee.Projection)):
-            proj = ee.Projection(proj)
+        if (not isinstance(proj, ge.Projection)):
+            proj = ge.Projection(proj)
 
         geometry = self.copy()
 
@@ -215,7 +215,7 @@ class Geometry(ee.computedobject.ComputedObject):
         Returns the projection of the geometry.
         """
         if (self._geometry.GetSpatialReference()):
-            return ee.Projection(
+            return ge.Projection(
                 self._geometry.GetSpatialReference().ExportToWkt())
         return None
 

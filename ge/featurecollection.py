@@ -4,16 +4,16 @@ from urllib.parse import urlparse
 
 from osgeo import ogr
 
-import ee.apifunction
-import ee.element
-from ee.collection import Collection
-from ee.ee_list import List
-from ee.geometry import Geometry
+import ge.apifunction
+import ge.element
+from ge.collection import Collection
+from ge.ee_list import List
+from ge.geometry import Geometry
 
 class FeatureCollection(Collection):
     def __init__(self, *args, **kwargs):
         super(FeatureCollection, self).__init__(
-            ee.apifunction.ApiFunction.lookup('Vector.load'), kwargs)
+            ge.apifunction.ApiFunction.lookup('Vector.load'), kwargs)
 
         self._id = ""
         self._columns = List([])
@@ -98,10 +98,10 @@ class FeatureCollection(Collection):
         return Feature
 
 
-class Column(ee.element.Element):
+class Column(ge.element.Element):
     def __init__(self, name, type, width, precision, **kwargs):
         super(Column, self).__init__(
-            ee.apifunction.ApiFunction.lookup('FeatureCollection.column'),
+            ge.apifunction.ApiFunction.lookup('FeatureCollection.column'),
             kwargs)
         self._name = name
         self._type = type
@@ -136,10 +136,10 @@ class Column(ee.element.Element):
         return 'Column'
 
 
-class Feature(ee.element.Element):
+class Feature(ge.element.Element):
     def __init__(self, type, geometry, **kwargs):
         super(Feature, self).__init__(
-            ee.apifunction.ApiFunction.lookup('FeatureCollection.feature'),
+            ge.apifunction.ApiFunction.lookup('FeatureCollection.feature'),
             kwargs)
         self._type = type
         self._geometry = geometry

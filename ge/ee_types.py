@@ -10,7 +10,7 @@ import numbers
 
 import six
 
-import ee.computedobject
+import ge.computedobject
 
 # A dictionary of the classes in the ee module.  Set by registerClasses.
 _registered_classes = {}
@@ -35,7 +35,7 @@ def classToName(klass):
     Returns:
       The name of the class, or "Object" if not recognized.
     """
-    if issubclass(klass, ee.computedobject.ComputedObject):
+    if issubclass(klass, ge.computedobject.ComputedObject):
         return klass.name()
     elif issubclass(klass, numbers.Number):
         return 'Number'
@@ -97,7 +97,7 @@ def isNumber(obj):
       Whether the object is a number or number variable.
     """
     return (isinstance(obj, numbers.Number) or
-            (isinstance(obj, ee.computedobject.ComputedObject) and
+            (isinstance(obj, ge.computedobject.ComputedObject) and
              obj.name() == 'Number'))
 
 
@@ -111,7 +111,7 @@ def isString(obj):
       Whether the object is a string or string variable.
     """
     return (isinstance(obj, six.string_types) or
-            (isinstance(obj, ee.computedobject.ComputedObject) and
+            (isinstance(obj, ge.computedobject.ComputedObject) and
              obj.name() == 'String'))
 
 
@@ -125,5 +125,5 @@ def isArray(obj):
       Whether the object is an array or array variable.
     """
     return (isinstance(obj, (list, tuple)) or
-            (isinstance(obj, ee.computedobject.ComputedObject) and
+            (isinstance(obj, ge.computedobject.ComputedObject) and
              obj.name() == 'List'))

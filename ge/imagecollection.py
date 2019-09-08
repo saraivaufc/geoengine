@@ -1,6 +1,6 @@
 import functools
 
-from ee.collection import Collection
+from ge.collection import Collection
 
 
 class ImageCollection(Collection):
@@ -12,7 +12,7 @@ class ImageCollection(Collection):
         pass
 
     def reduce(self, reducer, parallelScale=None):
-        from ee.image import Image, Band
+        from ge.image import Image, Band
         first_image = self.first()
         new_image = Image()
         new_image = first_image.copyProperties(new_image)

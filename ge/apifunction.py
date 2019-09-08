@@ -17,13 +17,13 @@ to apply each EE algorithm.
 import copy
 import keyword
 
-import ee.computedobject
-import ee.ee_exception
-import ee.ee_types
-import ee.function
+import ge.computedobject
+import ge.ee_exception
+import ge.ee_types
+import ge.function
 
 
-class ApiFunction(ee.function.Function):
+class ApiFunction(ge.function.Function):
     """An object representing an EE API Function."""
 
     # A dictionary of functions defined by the API server.
@@ -56,7 +56,7 @@ class ApiFunction(ee.function.Function):
     # See https://docs.python.org/3/reference/datamodel.html#object.__hash__
     def __hash__(self):
         return hash(
-            ee.computedobject.ComputedObject.freeze(self.getSignature()))
+            ge.computedobject.ComputedObject.freeze(self.getSignature()))
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -123,7 +123,7 @@ class ApiFunction(ee.function.Function):
         """
         result = cls.lookupInternal(name)
         if not name:
-            raise ee.ee_exception.EEException(
+            raise ge.ee_exception.EEException(
                 'Unknown built-in function name: %s' % name)
         return result
 
@@ -214,7 +214,7 @@ class ApiFunction(ee.function.Function):
                 bound_function.signature = signature
 
                 # Decide whether this is a static or an instance function.
-                is_instance = (signature['args'] and ee.ee_types.isSubtype(
+                is_instance = (signature['args'] and ge.ee_types.isSubtype(
                     signature['args'][0]['type'], type_name))
                 if not is_instance:
                     bound_function = staticmethod(bound_function)

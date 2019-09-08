@@ -13,8 +13,8 @@ import numbers
 
 import six
 
-import ee.ee_exception
-import ee.encodable
+import ge.ee_exception
+import ge.encodable
 
 # The datetime for the beginning of the Unix epoch.
 _EPOCH_DATETIME = datetime.datetime.utcfromtimestamp(0)
@@ -113,7 +113,7 @@ class Serializer(object):
                 'functionName': 'Date',
                 'arguments': {'value': DatetimeToMicroseconds(obj) / 1e3}
             }
-        elif isinstance(obj, ee.encodable.Encodable):
+        elif isinstance(obj, ge.encodable.Encodable):
             # Some objects know how to encode themselves.
             result = obj.encode(self._encodeValue)
             if (not isinstance(result, (list, tuple)) and
@@ -134,7 +134,7 @@ class Serializer(object):
                                for key, value in obj.items()])
             }
         else:
-            raise ee.ee_exception.EEException('Can\'t encode object: %s' % obj)
+            raise ge.ee_exception.EEException('Can\'t encode object: %s' % obj)
 
         if self._is_compound:
             # Save the new object and return a ValueRef.

@@ -2,7 +2,7 @@ import json
 import os
 import tempfile
 import random
-from db import models
+from ge.db import models
 
 from osgeo import gdal, osr, ogr
 

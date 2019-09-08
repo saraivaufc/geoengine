@@ -1,9 +1,9 @@
 import functools
 
-import ee.computedobject
+import ge.computedobject
 
 
-class List(ee.computedobject.ComputedObject):
+class List(ge.computedobject.ComputedObject):
     def __init__(self, elements=[], **kwargs):
         self._elements = list(elements)
         self.__dict__.update(kwargs)
@@ -20,7 +20,7 @@ class List(ee.computedobject.ComputedObject):
         pass
 
     def reduce(self, reducer):
-        from ee.image import Image, Band
+        from ge.image import Image, Band
         first_element = self._elements[0]
         if isinstance(first_element, Image):
             new_image = Image()

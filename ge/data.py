@@ -24,7 +24,7 @@ except ImportError:
     # Python 2.x
     import urllib
 
-import ee.ee_exception
+import ge.ee_exception
 
 # OAuth2 credentials object.  This may be set by ee.Initialize().
 _credentials = None
@@ -735,7 +735,7 @@ def send_(path, params, opt_method='POST', opt_raw=False):
     elif opt_method == 'POST':
         headers['Content-type'] = 'application/x-www-form-urlencoded'
     else:
-        raise ee.ee_exception.EEException(
+        raise ge.ee_exception.EEException(
             'Unexpected request method: ' + opt_method)
 
     def send_with_backoff(retries=0):
@@ -763,7 +763,7 @@ def send_(path, params, opt_method='POST', opt_raw=False):
                                    MAX_RETRY_WAIT) / 1000)
                     response, content = send_with_backoff(retries + 1)
         except httplib2.HttpLib2Error as e:
-            raise ee.ee_exception.EEException(
+            raise ge.ee_exception.EEException(
                 'Unexpected HTTP error: %s' % e.message)
         return response, content
 
@@ -790,11 +790,11 @@ def send_(path, params, opt_method='POST', opt_raw=False):
                 content = content
             json_content = json.loads(content)
         except Exception:
-            raise ee.ee_exception.EEException('Invalid JSON: %s' % content)
+            raise ge.ee_exception.EEException('Invalid JSON: %s' % content)
         if 'error' in json_content:
-            raise ee.ee_exception.EEException(json_content['error']['message'])
+            raise ge.ee_exception.EEException(json_content['error']['message'])
         if 'data' not in content:
-            raise ee.ee_exception.EEException(
+            raise ge.ee_exception.EEException(
                 'Malformed response: ' + str(content))
     else:
         json_content = None
@@ -802,14 +802,14 @@ def send_(path, params, opt_method='POST', opt_raw=False):
     if response.status < 100 or response.status >= 300:
         # Note if the response is JSON and contains an error value, we raise that
         # error above rather than this generic one.
-        raise ee.ee_exception.EEException('Server returned HTTP code: %d' %
+        raise ge.ee_exception.EEException('Server returned HTTP code: %d' %
                                           response.status)
 
     # Now known not to be an error response...
     if opt_raw:
         return content
     elif json_content is None:
-        raise ee.ee_exception.EEException(
+        raise ge.ee_exception.EEException(
             'Response was unexpectedly not JSON, but %s' % response[
                 'content-type'])
     else:
