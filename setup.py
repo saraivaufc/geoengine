@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name='geoengine',
     version='0.0.1',
-    url='https://github.com/saraivaufc/earth-engine.git',
+    url='https://github.com/saraivaufc/geoengine.git',
     author='Marciano Saraiva',
     author_email='saraiva.ufc@gmail.com',
     keywords='remote sensing,geoprocessing',
