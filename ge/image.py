@@ -10,9 +10,8 @@ from osgeo import gdal_array
 import ge.apifunction
 import ge.ee_list
 import ge.element
-from ge.tools import Raster
-
 from ge.db import models
+from ge.tools import Raster
 
 
 # https://pcjericks.github.io/py-gdalogr-cookbook/
@@ -42,7 +41,7 @@ class Image(ge.element.Element):
         id = urlparse(id)
 
         if id.scheme == "db":
-            image = Image._loadFromDatabase(id.netloc+id.path)
+            image = Image._loadFromDatabase(id.netloc + id.path)
         else:
             image = Image._loadFromLocalDisk(id.path)
         return image
@@ -113,7 +112,8 @@ class Image(ge.element.Element):
                                          path=filename).first()
 
             if image:
-                filename = "/vsimem/{hash}".format(hash=random.getrandbits(128))
+                filename = "/vsimem/{hash}".format(
+                    hash=random.getrandbits(128))
                 gdal.FileFromMemBuffer(filename, image.file.read())
                 return Image._loadFromLocalDisk(filename)
             else:

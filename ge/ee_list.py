@@ -52,6 +52,11 @@ class List(ge.computedobject.ComputedObject):
     def length(self):
         return len(self._elements)
 
+    def slice(self, start, end):
+        list = self.copy()
+        list._elements = self._elements[start: end]
+        return list
+
     def __iter__(self):
         return iter(self._elements)
 

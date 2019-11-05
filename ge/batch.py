@@ -115,26 +115,24 @@ class Export():
         @staticmethod
         def toDatabase(collection, fileNamePrefix=None, **kwargs):
             models.FeatureCollection \
-                .objects(path=fileNamePrefix) \
-                .update_one(upsert=True, set__path=fileNamePrefix)
+                .objects(code=fileNamePrefix) \
+                .update_one(upsert=True, set__code=fileNamePrefix)
 
             featureCollection = models.FeatureCollection\
-                .objects(path=fileNamePrefix)\
+                .objects(code=fileNamePrefix)\
                 .first()
 
             for feature in collection.features():
                 geometry = json.loads(feature.geometry().toGeoJSON())
                 properties = feature.properties().getInfo()
+                print(properties)
 
-                models.Feature\
-                    .objects(
-                        featureCollection=featureCollection.id,
-                        geometry=geometry,
-                        properties=properties
-                    ).update_one(upsert=True,
-                        set__featureCollection=featureCollection.id,
-                        set__geometry=geometry,
-                        set__properties=properties)
+                feature = models.Feature(
+                    featureCollection=featureCollection,
+                    geometry=geometry,
+                    properties=properties
+                )
+                feature.save()
 
         @staticmethod
         def __build_dataset(collection, fileNamePrefix):

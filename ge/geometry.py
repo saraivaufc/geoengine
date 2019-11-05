@@ -214,7 +214,7 @@ class Geometry(ge.computedobject.ComputedObject):
         """
         Returns the projection of the geometry.
         """
-        if (self._geometry.GetSpatialReference()):
+        if self._geometry.GetSpatialReference():
             return ge.Projection(
                 self._geometry.GetSpatialReference().ExportToWkt())
         return None
@@ -230,6 +230,9 @@ class Geometry(ge.computedobject.ComputedObject):
 
     def intersection(self, right, maxError=None, proj=None):
         return self.applyFunc(ogr.Geometry.Intersection, right)
+
+    def intersects(self, right, maxError=None, proj=None):
+        return self._geometry.Intersects(right._geometry)
 
     def union(self, right, maxError=None, proj=None):
         return self.applyFunc(ogr.Geometry.Union, right)

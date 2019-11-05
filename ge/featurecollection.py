@@ -1,5 +1,4 @@
 import json
-import os
 from urllib.parse import urlparse
 
 from osgeo import ogr
@@ -7,8 +6,10 @@ from osgeo import ogr
 import ge.apifunction
 import ge.element
 from ge.collection import Collection
+from ge.db import models
 from ge.ee_list import List
 from ge.geometry import Geometry
+
 
 class FeatureCollection(Collection):
     def __init__(self, *args, **kwargs):
@@ -33,7 +34,11 @@ class FeatureCollection(Collection):
     @staticmethod
     def load(id):
         id = urlparse(id)
-        vector = FeatureCollection._loadFromLocalDisk(id.path)
+
+        if id.scheme == "db":
+            vector = FeatureCollection._loadFromDatabase(id.netloc + id.path)
+        else:
+            vector = FeatureCollection._loadFromLocalDisk(id.path)
         return vector
 
     @staticmethod
@@ -77,6 +82,44 @@ class FeatureCollection(Collection):
 
         return vector
 
+    @staticmethod
+    def _loadFromDatabase(dataSourceNamePrefix):
+        vector = FeatureCollection()
+        code = dataSourceNamePrefix.replace("db://", "")
+        vector._id = code
+        vector._features = ge.List([])
+
+        featureCollection = models.FeatureCollection \
+            .objects(code=code) \
+            .first()
+
+        features = models.Feature.objects(featureCollection=featureCollection)
+        for f in features:
+            feature_geometry = Geometry(
+                geo_json=f.geometry
+            )
+
+            feature = Feature(type=f.type,
+                              geometry=feature_geometry)
+
+            for key, value in f.properties.items():
+                feature = feature.set(key, value)
+
+            vector._features.add(feature)
+
+        return vector
+
+    def filterBounds(self, geometry):
+        vector = FeatureCollection()
+        features = ge.List([])
+        for feature in self._features:
+            intersects = geometry.intersects(feature.geometry())
+            if intersects:
+                features.add(feature)
+
+        vector._features = features
+        return vector
+
     def compute(self):
         return self
 
@@ -88,6 +131,9 @@ class FeatureCollection(Collection):
 
     def first(self):
         return self._features.get(0)
+
+    def toList(self, count, offset=0):
+        return self.features().slice(offset, offset + count)
 
     @staticmethod
     def name():

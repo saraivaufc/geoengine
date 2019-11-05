@@ -10,6 +10,7 @@ class ImageCollection(DynamicDocument):
         'collection': 'imageCollections'
     }
 
+
 class Image(DynamicDocument):
     path = StringField(required=True)
     imageCollection = LazyReferenceField(ImageCollection,
@@ -21,10 +22,10 @@ class Image(DynamicDocument):
         'collection': 'images'
     }
 
+
 class FeatureCollection(DynamicDocument):
-    path = StringField()
+    code = StringField()
     type = StringField(default="FeatureCollection")
-    properties = DictField()
 
     meta = {
         'collection': 'featureCollections'
