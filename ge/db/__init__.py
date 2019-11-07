@@ -1,6 +1,11 @@
+import os
+
 from mongoengine import connect
-from ge import settings
 
-DATABASE = getattr(settings, "DATABASE", "earth_engine")
+DB_NAME = os.environ.get("GEOENGINE_DB_NAME", "earth_engine")
+DB_HOST = os.environ.get("GEOENGINE_DB_HOST", "localhost")
 
-connect(DATABASE)
+connect(host='mongodb://{DB_HOST}/{DB_NAME}'.format(
+    DB_HOST=DB_HOST,
+    DB_NAME=DB_NAME
+))
